@@ -5,5 +5,5 @@ yarn add eslint -D
 
 yarn eslint --init
 
-#Prettier
+# Prettier
 yarn add prettier eslint-config-prettier eslint-plugin-prettier babel-eslint -D
