@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Keyboard, ActivityIndicator } from 'react-native';
+import { Keyboard, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
 
@@ -66,20 +66,29 @@ export default class Main extends Component {
       loading: true,
     });
 
-    const response = await api.get(`/users/${newUser}`);
+    const response = await api
+      .get(`/users/${newUser}`)
+      .then(response => {
+        const data = {
+          name: response.data.name,
+          login: response.data.login,
+          bio: response.data.bio,
+          avatar: response.data.avatar_url,
+        };
 
-    const data = {
-      name: response.data.name,
-      login: response.data.login,
-      bio: response.data.bio,
-      avatar: response.data.avatar_url,
-    };
-
-    this.setState({
-      users: [...users, data],
-      newUser: '',
-      loading: false,
-    });
+        this.setState({
+          users: [...users, data],
+          newUser: '',
+          loading: false,
+        });
+      })
+      .catch(error => {
+        Alert.alert('Ops!', 'usuário não encontrado');
+        this.setState({
+          loading: false,
+          newUser: '',
+        });
+      });
 
     Keyboard.dismiss();
   };
